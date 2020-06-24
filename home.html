@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                font-family: 'Popins', sans-serif;
+                box-sizing: border-box;
+            }
+            p {
+                color: #868989;
+                font-size: 20px;
+                padding-left: 20px;
+                text-decoration: none;
+            }
+            header {
+                position: absolute;
+                background: #ffffff;
+                border-bottom: 5px solid #0e6a5c;
+                top:0;
+                left:0;
+                width:100%;
+                display:flex;
+                justify-content: space-between;
+                padding:27px 100px;
+                z-index: 10000;
+                transition: 1s;
+                grid-area: head;
+            }
+            #search {
+                text-align: center;
+                margin-left: 60px;
+                transition: 1s;
+            }
+            #search.active {
+                margin-left: 350px;
+            }
+            #search input {
+                background-image: url(./images/search.png);
+                background-repeat: no-repeat;
+                background-position: left;
+                background-position-x: 95%;
+                background-color: #f4f4f4;
+                border: 1px solid #d6d6d6;
+                height: 60px;
+                width: 325px;
+                padding: 10px;
+            }
+            .login {
+                padding: 13px;
+                margin-right: 50px;
+            }
+            .banner {
+                position: relative;
+                width: 100%;
+                height: 100vh;
+                min-height: 100px;
+                background: #ebecee;
+                background-size: cover;
+                /*align-items:center;*/
+                transition: 2s;
+                z-index: 1;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 12vh;
+                grid-template-areas: "head head" "dashview dashview";
+            }
+            #navigation {
+                position:fixed;
+                background-color: #01a38b;
+                top:0;
+                left:0;
+                width:400px;
+                height: 100%;
+                z-index:2;
+                transform:translateX(-297px);
+                display:grid;
+                grid-template-rows: 117px 250px;
+                grid-template-areas: "logo" "picture" "menu";
+                transition: 1s;
+            }
+            #navigation.active {
+                transform:translateX(0px);
+            }
+            #navigation #togglemenu {
+                position:relative;
+                width: 30px;
+                height:30px;
+                cursor:pointer;
+                grid-area: togglemenu;
+                margin-right: 35px;
+                margin-top: 40px;
+            }
+            #navigation #togglemenu:before {
+                content:'';
+                position:absolute;
+                top:7px;
+                width:100%;
+                height:2px;
+                background:#425543;
+            }
+            #navigation #togglemenu:after {
+                content:'';
+                position:absolute;
+                bottom:7px;
+                width:100%;
+                height:2px;
+                background:#425543;
+            }
+            #navigation.active #togglemenu:after {
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%) rotate(45deg);
+            }
+            #navigation.active #togglemenu:before {
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%) rotate(-45deg);
+            }
+            /*#navigation.active {
+                right:0;
+            } */
+            #navigation ul {
+                grid-area: menu;
+                position:relative;
+                display:flex;
+                flex-direction: column;
+            }
+            #navigation ul li {
+                list-style: none;
+                display: inline-flex;
+            }
+            #navigation ul li a {
+                text-decoration: none;
+                color: #373737;
+                display: inline-block;
+                font-size: 2em;
+                font-weight: 600;
+                text-transform: uppercase;
+                padding-left: 32px;
+                padding-top: 33px;
+                padding-bottom: 33px;
+                /* display:flex; justify-content: space-evenly; */
+            }
+            #navigation ul li #map-a {
+                opacity: 0;
+                transition: 0.5s;
+            }
+            #navigation ul li #map-a.active {
+                opacity: 1;
+            }
+            #navigation ul li #calendar-a {
+                opacity: 0;
+                transition: 0.5s;
+            }
+            #navigation ul li #calendar-a.active {
+                opacity: 1;
+            }
+            #navigation ul li #setting-a {
+                opacity: 0;
+                transition: 0.5s;
+            }
+            #navigation ul li #setting-a.active {
+                opacity: 1;
+            }
+            #navigation ul li a img {
+                transform: scale(1.5);
+                transition:1s;
+                transform: translateX(300px);
+            }
+            #navigation ul li a #map.active {
+                transform: scale(1.2);
+                transition:1s;
+            }
+            #navigation ul li a #calendar.active {
+                transform: scale(1.2);
+                transition:1s;
+            }
+            #navigation ul li a #setting.active {
+                transform: scale(1.2);
+                transition:1s;
+            }
+            #navigation ul li:hover {
+                background-color: #39dec5;
+                color: #f5f5f5;
+            }
+            #navigation ul li a:hover {
+                color: #ffffff;
+            }
+            #navigation .logo-area {
+                grid-area: logo;
+                background: #25d4ba;
+                justify-content: space-between;
+                height: 120px;
+                width: 100%;
+                border-bottom: 5px solid #0e6a5c;
+                display: flex;
+            }
+            #navigation .logo {
+                margin-left: 30%;
+                margin-top: 20px;
+                height: 75px;
+            }
+            #navigation #picture-user {
+                grid-area: picture;
+                padding: 25px;
+                margin-left: 125px;
+                margin-top: 35px;
+                transform: translateX(161px);
+                transition:1s;
+            }
+            #navigation #picture-user.active {
+                transform: translateX(0px);
+                transform: scale(1.5);
+            }
+            #content {
+                /*height: 100%;*/
+                width: 100%;
+                grid-area: dashview;
+                margin-left: 0px;
+                transition: 1s;
+            }
+            #flexbox-up {
+                display: flex;
+                flex-wrap: wrap;
+                max-width: 100%;
+                margin: 0 auto;
+                margin-top: 25px;
+                margin-left: 126px;
+                margin-right: 40px;
+                place-content: center;
+                transition: 1s;
+            }
+            #flexbox-up.active {
+                margin-left: 421px;
+            }
+            #flexbox-up > div {
+                flex: 1 1 280px;
+                margin: 10px;
+                text-align: left;
+                border-radius: 10px 20px;
+                height: 115px;
+                display: grid;
+            }
+            #flexbox-up > div p {
+                font-size: 25px;
+                color: #424443;
+                margin-top: 6px;
+            }
+            #flexbox-up > div a {
+                font-size: 25px;
+                color: #424443;
+                text-align: center;
+            }
+            #flexbox-up > div img {
+                justify-self: end;
+                margin-right: 20px;
+                margin-bottom: 5px;
+            }
+            #flexbox-down {
+                display: flex;
+                flex-wrap: wrap;
+                place-content: center;
+                margin-left: 126px;
+                transition: 1s;
+            }
+            #flexbox-down.active {
+                margin-left: 400px;
+            }
+            .patrimonio-box {
+                background-color: #00a0d1;
+            }
+            .locado {
+                background-color: #0f9959;
+            }
+            .inadimplencia {
+                background-color: #ffc21f;
+            }
+            .naolocado {
+                background-color: #ff604d;
+            }
+            hr {
+                border: 5px;
+            }
+            .tin {
+                border-bottom: 3px solid #b8b8b8;
+                border-top: none;
+                height: 3px;
+            }
+            .table-area {
+                color: #424443;
+                height: 100%;
+                width: auto;
+                padding-left: 42px;
+                padding-right: 30px;
+                padding: 30px;
+                justify-self: center;
+            }
+            .table-backarea {
+                background-color: #ffffff;
+                border-radius: 24px 24px 0 0;
+                padding-top: 11px;
+                height: 60%;
+                width: max-content;;
+                border: 1px solid #b8b8b8;
+            }
+            table#table {
+                background: #ffffff;
+                margin: 0 auto;
+                border: 1px solid #b8b8b8;
+                /*
+                width: -webkit-fill-available;
+                height: inherit;
+                */
+            }
+            table#table tr.dif td{
+                background: #ebecee;
+            }
+            tr {
+                text-align: left;
+            }
+            th,td {
+                color: #868989;
+                width: 137px;
+                height: 37px;
+                padding-left: 12px;
+                padding-right: 10px;
+            }
+            .registro-area {
+                color: #424443;
+                height: 100%;
+                width: auto;
+                padding: 30px;
+                justify-self: center;
+            }
+            .registro-backarea {
+                background-color: #ffffff;
+                border-radius: 24px 24px 0 0;
+                padding-top: 11px;
+                height: 60%;
+                width: max-content;;
+                border: 1px solid #b8b8b8;
+            }
+            .digit {
+                display: inline-grid;
+            }
+            .digit > div a {
+                color: #424443;
+                font-size: 20px;
+            }
+            .imovel {
+                float: right;
+                padding: 20px;
+                text-align: center;
+            }
+            .imovel input {
+                background-image: url(./images/place.png);
+                background-repeat: no-repeat;
+                background-position: left;
+                background-position-x: 95%;
+                background-color: #f4f4f4;
+                border: 1px solid #d6d6d6;
+                height: 45px;
+                width: 258px;
+                padding: 10px;
+            }
+            .localizacao {
+                float: right;
+                padding: 20px;
+                text-align: center;
+            }
+            .localizacao input {
+                background-image: url(./images/pin.png);
+                background-repeat: no-repeat;
+                background-position: left;
+                background-position-x: 95%;
+                background-color: #f4f4f4;
+                border: 1px solid #d6d6d6;
+                height: 45px;
+                width: 200px;
+                padding: 10px;
+            }
+            .data {
+                float: right;
+                padding: 20px;
+                text-align: center;
+            }
+            .data input {
+                background-image: url(./images/calendar.png);
+                background-repeat: no-repeat;
+                background-position: left;
+                background-position-x: 95%;
+                background-color: #f4f4f4;
+                border: 1px solid #d6d6d6;
+                height: 45px;
+                width: 280px;
+                padding: 10px;
+            }
+            .flexbox-button {
+                display: flex;
+                flex-wrap: wrap;
+                margin: 10px auto;
+                place-content: center
+            }
+            .flexbox-button > div {
+                margin: 10px;
+                text-align: center;
+                border: 1px solid #c8c8c8;
+                border-radius: 5px;
+                width: 100px;
+                height: 35px;
+                background-color: #424443;
+                -webkit-text-stroke-width: thin;
+            }
+            .flexbox-button > div a {
+                font-size: 15px;
+                color: #ffffff;
+                vertical-align: sub;
+            }
+        </style>
+        <title>I-Mobile 1.2</title>
+    </head>
+    <body>
+        <section class = "banner" id = "sec">
+            <header>
+                <div id = "search">
+                    <input placeholder = "Pesquise Seu Imóvel" type = "text">
+                </div>
+                <div class = "login">
+                    <img class = "login-button" src = "./images/user.png"/>
+                </div>
+            </header>
+            <div id = "content">
+                <section id = "flexbox-up">
+                    <div class = "patrimonio-box">
+                        <p>Patrimônio</p>
+                        <a>R$ 1.795.000,00</a>
+                        <img src = "./images/money.png"/>
+                    </div>
+                    <div class = "locado">
+                        <p>Aluguel do Mês</p>
+                        <a>R$ 2.400,00</a>
+                        <img src = "./images/coin.png"/>
+                    </div>
+                    <div class = "inadimplencia">
+                        <p>Inadimplência</p>
+                        <a>0</a>
+                        <img src = "./images/down.png"/>
+                    </div>
+                    <div class = "naolocado">
+                        <p>Não Locado</p>
+                        <a> 2 propriedades</a>
+                        <img src = "./images/alert.png"/>
+                    </div>
+                </section>
+                <section id = "flexbox-down">
+                    <div class = "table-area">
+                    <div class = "table-backarea">
+                        <p>Seus Imóveis</p>
+                        <hr size="10" width="100%" align="center" class = "tin">
+                        <table cellpadding = "20"align = "left" id = "table">  <!-- border = "5" cellpadding = "20" cellspacing = "5" */ -->
+                            <thead>
+                                <th>Imóvel</th>
+                                <th>Valor</th>
+                                <th>Localizado</th>
+                                <th>Valor do Aluguel</th>
+                            </thead>
+                            <tr class = "dif">
+                                <td>Apartamento</td>
+                                <td>300.000,00</td>
+                                <td>Vila Franciscana</td>
+                                <td>700,00</td>
+                            </tr>
+                            <tr>
+                                <td>Casa</td>
+                                <td>650.000,00</td>
+                                <td>Mauricio de Nassau</td>
+                                <td>1.200,00</td>
+                            </tr>
+                            <tr class = "dif">
+                                <td>Flat</td>
+                                <td>220.000,00</td>
+                                <td>Centro</td>
+                                <td>500,00</td>
+                            </tr>
+                            <tr>
+                                <td>Casa</td>
+                                <td>275.000,00</td>
+                                <td>Boa Vista</td>
+                                <td>600,00</td>
+                            </tr>
+                            <tr class = "dif">
+                                <td>Casa</td>
+                                <td>350.00,00</td>
+                                <td>-----</td>
+                                <td>720,00</td>
+                            </tr>
+                            <tr>
+                                <td>Exemplo..</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class = "dif">
+                                <td>Exemplo...</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tfoot>
+                                <th>TOTAL</th>  <!-- colspan = "2" para mesclar celulas -->
+                                <th>1.795.000,00</th>
+                                <th>---</th>
+                                <th>3.720,00</th>
+                            </tfoot>
+                        </table>
+                    </div>
+            </div>
+            <div class = "registro-area">
+                <div class = "registro-backarea">
+                    <p>Inserir/Excluir Imóveis</p>
+                    <hr size="10" width="100%" align="center" class = "tin">
+
+                    <div class = "digit">
+                        <div class = "imovel">
+                            <a>Imóvel</a>
+                            <input placeholder = "Apartamento, Casa, Conjugado..." type = "text">
+                        </div>
+                        <div class = "localizacao">
+                            <a>Localizado em</a>
+                            <input placeholder = "Bairro, Cidade..." type = "text">
+                        </div>
+                        <div class = "data">
+                            <input placeholder = "Data" type = "text">
+                        </div>
+                    </div>
+                    <section class = "flexbox-button">
+                        <div class = "button">
+                            <a>Inserir</a>
+                        </div>
+                        <div class = "button">
+                            <a>Excluir</a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+                </section>
+
+            </div>
+
+        </section>
+
+        <div id="navigation">
+
+            <div class = "logo-area" onclick="toggle()">
+                <img class = "logo" src = "./images/logooo.png"/>
+                <div id="togglemenu"></div>
+            </div>
+            <img id = "picture-user" src = "./images/usuario.png"/>
+            <ul>
+                <li><a href = ""><img id = "map" src = "./images/map.png"/><a id = "map-a">Mapa</a></a></li>
+                <li><a href = ""><img id = "calendar" src = "./images/calendar.png"/><a id = "calendar-a">Calendário</a></a></li>
+                <li><a href = ""><img id = "setting" src = "./images/setting.png"/><a id = "setting-a">Configurações</a></a></li>
+            </ul>
+        </div>
+        <script type="text/javascript">
+            function toggle (){
+                var sec = document.getElementById('sec');
+                sec.classList.toggle('active');
+                var nav= document.getElementById('navigation');
+                nav.classList.toggle('active');
+                var pic= document.getElementById('picture-user');
+                pic.classList.toggle('active');
+                var map= document.getElementById('map');
+                map.classList.toggle('active');
+                var calendar= document.getElementById('calendar');
+                calendar.classList.toggle('active');
+                var setting= document.getElementById('setting');
+                setting.classList.toggle('active');
+
+                var mapa= document.getElementById('map-a');
+                mapa.classList.toggle('active');
+                var calendara= document.getElementById('calendar-a');
+                calendara.classList.toggle('active');
+                var settinga= document.getElementById('setting-a');
+                settinga.classList.toggle('active');
+
+                var search= document.getElementById('search');
+                search.classList.toggle('active');
+                var flexboxup= document.getElementById('flexbox-up');
+                flexboxup.classList.toggle('active');
+                var flexboxdown= document.getElementById('flexbox-down');
+                flexboxdown.classList.toggle('active');
+            }
+        </script>
+    </body>
+</html>
